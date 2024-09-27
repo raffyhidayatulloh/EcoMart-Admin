@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed layout-compact" dir="ltr" data-theme="theme-default" data-assets-path="~/assets/" data-template="vertical-menu-template-free" data-style="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="description" content="" />
+    <title>@ViewData["Title"] - EcoMart</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/EcoMart.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/assets/css/style.css" asp-append-version="true" />
+
+    @* // -- PLUGIN -- // *@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    @* <link rel="icon" type="image/x-icon" href="~/assets/img/favicon/favicon.ico" /> *@
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/assets/vendor/fonts/boxicons.css" />
+
+    <link rel="stylesheet" href="~/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/assets/css/demo.css" />
+
+    <link rel="stylesheet" href="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css" />
+
+    <script src="~/assets/vendor/js/helpers.js"></script>
+    <script src="~/assets/js/config.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.0/dist/sweetalert2.min.css" rel="stylesheet">
+    @* // -- / PLUGIN -- // *@
+</head>
+<body>
+    @* <!-- Layout wrapper --> *@
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+
+            @* <!-- SIDE BAR --> *@
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+                <div class="app-brand demo">
+                    <a asp-controller="Home" asp-action="Index" class="app-brand-link">
+                        <span class="app-brand-logo demo">
+                            <img src="~/assets/img/logo/ecoMartLogo.png" width="50" height="50" />
+                        </span>
+                        <span class="app-brand-text demo menu-text fw-bold ms-2">ECOMART</span>
+                    </a>
+                    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                        <i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
+                    </a>
+                </div>
+                <div class="menu-inner-shadow"></div>
+                <ul class="menu-inner py-1">
+
+                    <!-- Dashboards -->
+                    <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active open" : "")">
+                        <a asp-controller="Home" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bxs-dashboard"></i>
+                            <div class="text-truncate">Dashboards</div>
+                        </a>
+                    </li>
+
+                    <!-- Layouts -->
+                    <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Product" ? "active open" : "")">
+                        <a asp-controller="Product" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-collection"></i>
+                            <div class="text-truncate">Products</div>
+                        </a>
+                    </li>
+
+                    <!-- Categories -->
+                    <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Category" ? "active open" : "")">
+                        <a asp-controller="Category" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-category"></i>
+                            <div class="text-truncate">Categories</div>
+                        </a>
+                    </li>
+
+                    <!-- Orders -->
+                    <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Order" ? "active open" : "")">
+                        <a asp-controller="Order" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-cart"></i>
+                            <div class="text-truncate">Orders</div>
+                        </a>
+                    </li>
+
+                    <!-- Payments -->
+                    <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Payment" ? "active open" : "")">
+                        <a asp-controller="Payment" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-wallet"></i>
+                            <div class="text-truncate">Payments</div>
+                        </a>
+                    </li>
+
+                    <!-- Shippings -->
+                    <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Shipping" ? "active open" : "")">
+                        <a asp-controller="Shipping" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bxs-truck"></i>
+                            <div class="text-truncate">Shippings</div>
+                        </a>
+                    </li>
+
+                    <!-- Income Statements -->
+                    <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Income" ? "active open" : "")">
+                        <a asp-controller="Income" asp-action="Index" class="menu-link">
+                            <i class='menu-icon tf-icons bx bx-bar-chart-square'></i>
+                            <div class="text-truncate">Income Statements</div>
+                        </a>
+                    </li>
+
+                    <!-- Product Reviews -->
+                    <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Review" ? "active open" : "")">
+                        <a asp-controller="Review" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-star"></i>
+                            <div class="text-truncate">Product Reviews</div>
+                        </a>
+                    </li>
+
+                    <!-- Product Reports -->
+                    <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Report" ? "active open" : "")">
+                        <a asp-controller="Report" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-error"></i>
+                            <div class="text-truncate">Product Reports</div>
+                        </a>
+                    </li>
+
+                    <!-- Coupon -->
+                    <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Coupon" ? "active open" : "")">
+                        <a asp-controller="Coupon" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bxs-coupon"></i>
+                            <div class="text-truncate">Coupons</div>
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+            @* <!-- / SIDE BAR --> *@
+
+            @* <!-- Content Page --> *@
+            <div class="layout-page">
+                @RenderBody()
+            </div>
+            @* <!-- / Content page --> *@
+        </div>
+
+        @* <!-- Overlay --> *@
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    @* <!-- / Layout wrapper --> *@
+
+    @* // --  PLUGIN -- // *@
+    @* <!-- Core JS --> *@
+    @* <!-- build:js assets/vendor/js/core.js --> *@
+    <script src="~/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="~/assets/vendor/libs/popper/popper.js"></script>
+    <script src="~/assets/vendor/js/bootstrap.js"></script>
+    <script src="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="~/assets/vendor/js/menu.js"></script>
+    @* <!-- endbuild --> *@
+
+    @* <!-- Vendors JS --> *@
+    <script src="~/assets/vendor/libs/apex-charts/apexcharts.js"></script>
+
+    @* <!-- Main JS --> *@
+    <script src="~/assets/js/main.js"></script>
+
+    @* <!-- Page JS --> *@
+    <script src="~/assets/js/dashboards-analytics.js"></script>
+
+    @* <!-- Place this tag before closing body tag for github widget button. --> *@
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    @* // -- / PLUGIN -- // *@
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.0/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

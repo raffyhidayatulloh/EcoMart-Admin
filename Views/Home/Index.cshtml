@@ -1,0 +1,451 @@
+﻿@using EcoMart.ViewModels
+@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboards";
+}
+
+<!-- Navbar -->
+<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
+        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
+            <i class="bx bx-menu bx-md"></i>
+        </a>
+    </div>
+    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+        <ul class="navbar-nav flex-row align-items-center ms-auto">
+            <!-- User -->
+            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img src="../assets/img/avatars/1.png" alt="profile" class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar avatar-online">
+                                        <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">@ViewBag.UserName</h6>
+                                    <small class="text-muted">@ViewBag.Role</small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider my-1"></div>
+                    </li>
+                    <li>
+                        <span class="dropdown-item m-0 p-0">
+                            <form asp-area="" asp-controller="Account" asp-action="Logout">
+                                <button class="w-100 text-start" style="border: none; background: none; color: inherit; height: 38px;"><i class="bx bx-power-off bx-md me-3 ms-3"></i> Logout</button>
+                            </form>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <!--/ User -->
+        </ul>
+    </div>
+</nav>
+<!-- / Navbar -->
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row">
+            <!-- Income Statement -->
+            <div class="col-12 col-xxl-8 order-0 mb-6">
+                <div class="card">
+                    <div class="row row-bordered g-0">
+                        <div class="col-lg-12">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <div class="card-title mb-0">
+                                    <h5 class="m-0 me-2">Income Statement @DateTime.Now.Year</h5>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn p-0" type="button" id="cardOpt1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="bx bx-dots-vertical-rounded text-muted"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="cardOpt1">
+                                        <a class="dropdown-item" asp-controller="Income" asp-action="Index">View More</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-6 pb-6 d-flex justify-content-center align-items-center">
+                                <div class="w-100 dash-cont-income">
+                                    <canvas id="myChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / Income Statement -->
+            <!-- 4 CARD -->
+            <div class="col-lg col-md order-1">
+                <div class="row" style="height: 50%;">
+                    <div class="col-lg-6 col-md-6 col-6 mb-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="card-title d-flex align-items-start justify-content-between mb-6">
+                                    <div class="avatar flex-shrink-0">
+                                        <img src="../assets/img/icons/unicons/success.png" alt="success" class="rounded" style="cursor: default;" />
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn p-0" type="button" id="cardOpt1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded text-muted"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="cardOpt1">
+                                            <a class="dropdown-item" asp-controller="Payment" asp-action="Index" asp-route-filterBy="0">View More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mb-1">Paid Success</p>
+                                <h4 class="card-title mb-3">@Model.PaidSuccessfully</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-6 mb-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="card-title d-flex align-items-start justify-content-between mb-6">
+                                    <div class="avatar flex-shrink-0">
+                                        <img src="../assets/img/icons/unicons/delivered.png" alt="delivered" class="rounded" style="cursor: default;" />
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn p-0" type="button" id="cardOpt1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded text-muted"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="cardOpt1">
+                                            <a class="dropdown-item" asp-controller="Order" asp-action="Index" asp-route-filterBy="2">View More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mb-1">Order Delivered</p>
+                                <h4 class="card-title mb-3">@Model.OrderDelivered</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="height: 50%;">
+                    <div class="col-lg-6 col-md-6 col-6 mb-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="card-title d-flex align-items-start justify-content-between mb-6">
+                                    <div class="avatar flex-shrink-0">
+                                        <img src="../assets/img/icons/unicons/notyet.png" alt="not yet" class="rounded" style="cursor: default;" />
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn p-0" type="button" id="cardOpt1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded text-muted"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="cardOpt1">
+                                            <a class="dropdown-item" asp-controller="Payment" asp-action="Index" asp-route-filterBy="1">View More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mb-1">Not Yet Paid</p>
+                                <h4 class="card-title mb-3">@Model.NotYetPaid</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-6 mb-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="card-title d-flex align-items-start justify-content-between mb-6">
+                                    <div class="avatar flex-shrink-0">
+                                        <img src="../assets/img/icons/unicons/pending.png" alt="pending" class="rounded" style="cursor: default;" />
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn p-0" type="button" id="cardOpt1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="bx bx-dots-vertical-rounded text-muted"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="cardOpt1">
+                                            <a class="dropdown-item" asp-controller="Order" asp-action="Index" asp-route-filterBy="0">View More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mb-1">Order Pending</p>
+                                <h4 class="card-title mb-3">@Model.OrderPending</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / 4 CARD -->
+        </div>
+
+        <div class="row">
+            <!-- Order Statistics -->
+            <div class="col-md-6 col-lg-4 col-xl-4 order-2 mb-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between">
+                        <div class="card-title mb-0">
+                            <div>
+                                <h5 class="card-title m-0 me-2">Order Statistics</h5>
+                                <p class="m-0">@DateTime.Now.ToString("MMMM") @DateTime.Now.Year</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex flex-column align-items-center gap-1">
+                                <small>Total Orders</small>
+                                <h3 class="mb-1">@Model.TotalOrders</h3>
+                            </div>
+                        </div>
+                        <div class="px-6 d-flex justify-content-center align-items-center">
+                            <canvas id="chartDoughnut"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/ Order Statistics -->
+            
+            <!-- Top Rated Products -->
+            <div class="col-md-6 col-lg-8 col-xxl-4 order-2 mb-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <div>
+                            <h5 class="card-title m-0 me-2">Top-Rated Products</h5>
+                            <p class="m-0">@DateTime.Now.ToString("MMMM") @DateTime.Now.Year</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="p-0 m-0">
+                            @{ var totalTopProducts = 4; }
+                            @foreach (var item in Model.TopProducts) {
+                                totalTopProducts--;
+                                <li class="d-flex align-items-start">
+                                    <div class="d-flex border-bottom py-5 gap-6 gap-sm-0 flex-column flex-sm-row w-100">
+                                        <div class="d-flex gap-4 flex-wrap w-100">
+                                            <img src="@item.ImageUrl" width="40" height="40" class="rounded" />
+                                            <div class="d-flex flex-column col-9">
+                                                <h6 class="m-0 fw-bold text-truncate">@item.ProductName</h6>
+                                                <div>
+                                                    <label class="text-center">
+                                                        @{
+                                                            var avgrat = $"{@item.AverageRating}";
+                                                        }
+                                                        @if (item.AverageRating == 0 || item.AverageRating == 1 || item.AverageRating == 2 || item.AverageRating == 3 || item.AverageRating == 4 || item.AverageRating == 5) {
+                                                            avgrat += ".0";
+                                                        }
+                                                        @avgrat
+                                                    </label>
+                                                    <i class='bx bxs-star text-warning pb-1'></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <label class="fw-bold">@item.TotalReviews</label>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                            @for (int i = 1; i <= totalTopProducts; i++) {
+                                <li class="d-flex align-items-start">
+                                    <div class="d-flex border-bottom py-5 gap-6 flex-column flex-md-row w-100">
+                                        <div class="d-flex gap-4 flex-wrap w-100 py-3">
+                                            <div class="d-flex w-100 justify-content-center align-items-center">
+                                                <h6 class="m-0">Not Ranked Yet</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--/ Top Rated Products -->
+
+            <!-- Best Seller Products -->
+            <div class="col-md-12 col-lg-12 col-xxl-4 order-2 mb-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <div>
+                            <h5 class="card-title m-0 me-2">Best-Seller Products</h5>
+                            <p class="m-0">@DateTime.Now.ToString("MMMM") @DateTime.Now.Year</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="p-0 m-0">
+                            @{ var totalBestProduct = 4; }
+                            @foreach (var item in Model.BestProducts) {
+                                totalBestProduct--;
+                                <li class="d-flex align-items-start">
+                                    <div class="d-flex border-bottom py-5 gap-6 gap-sm-0 flex-column flex-sm-row w-100">
+                                        <div class="d-flex gap-4 flex-wrap w-100">
+                                            <img src="@item.ImageUrl" width="40" height="40" class="rounded" />
+                                            <div class="d-flex flex-column pb-1 col-9">
+                                                <h6 class="m-0 fw-bold text-truncate">@item.ProductName</h6>
+                                                <label>@item.CategoryName</label>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <label class="fw-bold">@item.TotalQuantity</label>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                            @for (int i = 1; i <= totalBestProduct; i++) {
+                                <li class="d-flex align-items-start">
+                                    <div class="d-flex border-bottom py-5 gap-6 flex-column flex-md-row w-100">
+                                        <div class="d-flex justify-content-center align-items-center w-100">
+                                            <h6 class="m-0">Not Ranked Yet</h6>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--/ Best Seller Products -->
+        </div>
+
+        <div class="row">
+            <!-- Orders -->
+            <div class="col-12 order-6 mb-6">
+                <div class="card">
+                    <div class="row row-bordered g-0">
+                        <div class="col-lg-12">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <div class="card-title mb-0">
+                                    <h5 class="m-0 me-2">Pending Orders</h5>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn p-0" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="bx bx-dots-vertical-rounded text-muted"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="cardOpt1">
+                                        <a class="dropdown-item" asp-controller="Order" asp-action="Index" asp-route-filterBy="0">View More</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive text-nowrap mx-6 mb-6">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Order ID</th>
+                                            <th>Order Date</th>
+                                            <th>Order Status</th>
+                                            <th>Total Amount</th>
+                                            <th>Payment Status</th>
+                                            <th>Shipping Address</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Orders != null) {
+                                            @foreach (var item in Model.Orders) {
+                                                int rowIndex = 1;
+                                                <tr>
+                                                    <td>@rowIndex</td>
+                                                    <td>@item.Id</td>
+                                                    <td>@item.OrderDate</td>
+                                                    <td>
+                                                        <label class="badge btn-sm w-100 bg-label-warning">
+                                                            @item.OrderStatus
+                                                        </label>
+                                                    </td>
+                                                    <td>@item.TotalAmount.ToString("C0", new System.Globalization.CultureInfo("id-ID"))</td>
+                                                    <td>
+                                                        <label class="badge btn-sm w-100 bg-label-success">
+                                                            @item.PaymentStatus
+                                                        </label>
+                                                    </td>
+                                                    <td>@item.ShippingAddress</td>
+                                                </tr>
+                                            }
+                                        } else {
+                                            <tr>
+                                                <td colspan="8" class="text-center">No pending orders</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / Orders -->
+        </div>
+    </div>
+    <!-- / Content -->
+    <div class="content-backdrop fade"></div>
+</div>
+<!-- Content wrapper -->
+
+@section Scripts {
+    <script>
+        const monthlyPayments = @Html.Raw(Json.Serialize(ViewBag.MonthlyPayments));
+        const topCategoryMonthly = @Html.Raw(Json.Serialize(ViewBag.TopCategoryMonthly));
+        const categoryCountMonthly = @Html.Raw(Json.Serialize(ViewBag.CategoryCountMonthly));
+        const ctx = document.getElementById('myChart');
+        const cDoughnut = document.getElementById('chartDoughnut');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Des'],
+                datasets: [{
+                    label: 'Income',
+                    data: monthlyPayments,
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgb(75, 192, 192)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: {
+                            autoSkip: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        new Chart(cDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: topCategoryMonthly,
+                datasets: [{
+                    label: 'Top Category',
+                    data: categoryCountMonthly,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)'
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+}

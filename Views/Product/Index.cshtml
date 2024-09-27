@@ -1,0 +1,748 @@
+﻿@using EcoMart.ViewModels
+@model ProductViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<!-- Navbar -->
+<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+     id="layout-navbar">
+    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
+        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
+            <i class="bx bx-menu bx-md"></i>
+        </a>
+    </div>
+    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+        <!-- Search -->
+        <div class="navbar-nav align-items-center">
+            <form asp-action="Index">
+                <div class="nav-item d-flex align-items-center">
+                    <i class="bx bx-search bx-md"></i>
+                    <input asp-for="Term" type="text" name="term" class="form-control border-0 shadow-none ps-1 ps-sm-2" placeholder="Search..." autocomplete="off" />
+                    <input type="hidden" asp-for="FilterBy" />
+                </div>
+            </form>
+        </div>
+        <!-- /Search -->
+        <ul class="navbar-nav flex-row align-items-center ms-auto">
+            <!-- User -->
+            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img src="../assets/img/avatars/1.png" alt="profile" class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar avatar-online">
+                                        <img src="../assets/img/avatars/1.png" alt="profile" class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">@ViewBag.UserName</h6>
+                                    <small class="text-muted">@ViewBag.Role</small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider my-1"></div>
+                    </li>
+                    <li>
+                        <span class="dropdown-item m-0 p-0">
+                            <form asp-area="" asp-controller="Account" asp-action="Logout">
+                                <button class="w-100 text-start" style="border: none; background: none; color: inherit; height: 38px;"><i class="bx bx-power-off bx-md me-3 ms-3"></i> Logout</button>
+                            </form>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <!--/ User -->
+        </ul>
+    </div>
+</nav>
+<!--/ Navbar -->
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-6">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-6 pb-4 justify-content-between">
+                            <div class="button-wrapper">
+                                <label class="badge bg-label-primary me-3 mb-4">
+                                    <i class="bx bx-collection"></i>
+                                </label>
+                                <span class="text-primary fw-bold">Products</span>
+                            </div>
+                            <div class="button-wrapper d-flex gap-3">
+                                <a class="btn btn-primary btn-icon dropdown-toggle hide-arrow text-white mb-4" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class='bx bx-filter'></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="/Product/Index">None</a></li>
+                                    @foreach (var item in Model.Categories) {
+                                        <li><a class="dropdown-item" href="/Product/Index?filterBy=@item.Id">@item.CategoryName</a></li>
+                                    }
+                                </ul>
+                                <button type="button" class="btn btn-sm btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#modalCreate" tabindex="0">
+                                    <span class="d-none d-sm-block"><i class="bx bx-upload"></i>&nbsp;&nbsp;Add</span>
+                                    <i class="bx bx-upload d-block d-sm-none"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4 g-3">
+                            @if (TempData["NoData"] != null) {
+                                <h6 class="text-center">@TempData["NoData"]</h6>
+                            }
+                            @foreach (var item in Model.Products) {
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="card" style="background-color: #F4F4F4; padding: 10px; height: 100%;">
+                                        <div class="d-flex flex-column justify-content-between" style="height: 100%;">
+                                            <div class="d-flex align-items-start mb-3">
+                                                <div style="flex-shrink: 0; width: 100px; height: 100px; overflow: hidden;">
+                                                    <img class="card-img" src="@item.ImageUrl" alt="Card image" style="width: 100%; height: 100%; object-fit: cover;" />
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="card-title mb-1 text-dark">
+                                                        @{ var productName = item.ProductName.Length > 35 ? item.ProductName.Substring(0, 35) + "..." : item.ProductName; }
+                                                        @productName
+                                                    </h6>
+                                                    <p class="card-text" style="font-size: 12px; margin: 0; margin-top: 5px;">
+                                                        @{ var description = item.Description.Length > 80 ? item.Description.Substring(0, 80) + "..." : item.Description; }
+                                                        @description
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                <label class="badge bg-label-primary me-2">
+                                                    <i class="bx bx-box product-i-d-none"></i> @(item.StockQuantity > 999 ? "999+" : item.StockQuantity)
+                                                </label>
+                                                <div>
+                                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalDetail" data-id="@item.Id"><i class='bx bx-detail'></i></button>
+                                                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEdit" data-id="@item.Id"><i class='bx bx-pencil'></i></button>
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteProduct('@item.Id', '@item.ImageUrl')"><i class='bx bx-trash'></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.TotalPages > 1) {
+                                <div class="d-flex justify-content-end mt-6">
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination">
+                                            @if (Model.CurrentPage > 1) {
+                                                <li class="page-item prev">
+                                                    <a class="page-link" href="/Product/Index?term=@Model.Term&currentPage=@(Model.CurrentPage-1)&filterBy=@Model.FilterBy">
+                                                        <i class="tf-icon bx bx-chevron-left bx-sm"></i>
+                                                    </a>
+                                                </li>
+                                            }
+                                            @for (int i = 1; i <= Model.TotalPages; i++) {
+                                                @if (i == Model.CurrentPage) {
+                                                    <li class="page-item active">
+                                                        <a class="page-link" href="/Product/Index?term=@Model.Term&currentPage=@i&filterBy=@Model.FilterBy">@i</a>
+                                                    </li>
+                                                } else {
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="/Product/Index?term=@Model.Term&currentPage=@i&filterBy=@Model.FilterBy">@i</a>
+                                                    </li>
+                                                }
+                                            }
+                                            @if (Model.CurrentPage < Model.TotalPages) {
+                                                <li class="page-item next">
+                                                    <a class="page-link" href="/Product/Index?term=@Model.Term&currentPage=@(Model.CurrentPage+1)&filterBy=@Model.FilterBy">
+                                                        <i class="tf-icon bx bx-chevron-right bx-sm"></i>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </nav>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / Content -->
+    <div class="content-backdrop fade"></div>
+</div>
+<!-- Content wrapper -->
+
+<!-- MODAL ADD -->
+<div class="modal fade" id="modalCreate" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="button-wrapper">
+                    <label class="badge bg-label-primary me-3">
+                        <i class="bx bx-upload"></i>
+                    </label>
+                    <span class="text-primary fw-bold">Add Product</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12 col-lg-12">
+                    <div class="row h-100">
+                        <div class="col-md-4 col-lg-4 mb-3">
+                            <div class="ratio ratio-1x1">
+                                <img id="imagePreview" src="~/assets/img/elements/imgpreview.png" alt="Image Product" class="img-fluid img-cover" />
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-lg-8">
+                            <form method="post" asp-action="Create" enctype="multipart/form-data" id="createForm">
+                                <span id="valProductName" class="text-danger pb-2"></span>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="CreateProductVM.ProductName" class="form-control" id="cProductName" placeholder="Product Name" autocomplete="off" spellcheck="false">
+                                    <label for="cProductName" class="text-primary">Product Name</label>
+                                </div>
+                                <span id="valDescription" class="text-danger pb-2"></span>
+                                <div class="form mb-3">
+                                    <label for="cDescription" class="text-primary opacity-75">Description</label>
+                                    <textarea asp-for="CreateProductVM.Description" class="form-control" rows="3" placeholder="Description" id="cDescription" spellcheck="false"></textarea>
+                                </div>
+                                <span id="valCategoryId" class="text-danger pb-2"></span>
+                                <div class="form mb-3">
+                                    <label for="cCategoryId" class="form-label text-primary opacity-75">Category</label>
+                                    <select asp-for="CreateProductVM.CategoryId" class="form-select" id="cCategoryId">
+                                        <option selected disabled value="">Choose :</option>
+                                        @foreach (var item in Model.Categories) {
+                                            <option value="@item.Id">@item.CategoryName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span id="valPrice" class="text-danger pb-2"></span>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="CreateProductVM.Price" class="form-control" placeholder="Price" id="cPrice">
+                                    <label for="cPrice" class="text-primary">Price</label>
+                                </div>
+                                <span id="valStockQuantity" class="text-danger pb-2"></span>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="CreateProductVM.StockQuantity" class="form-control" placeholder="Stock Quantity" id="cStockQuantity">
+                                    <label for="cStockQuantity" class="text-primary">Stock Quantity</label>
+                                </div>
+                                <span id="valImageUrl" class="text-danger pb-2"></span>
+                                <div class="form mb-3">
+                                    <label for="cImageUrl" class="form-label text-primary opacity-75">Image</label>
+                                    <input asp-for="CreateProductVM.ImageUrl" type="file" class="form-control" onchange="previewImage(event, 'imagePreview')" id="cImageUrl">
+                                </div>
+                                <div class="d-flex justify-content-end mt-3 gap-2">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- / MODAL ADD -->
+
+<!-- MODAL EDIT -->
+<div class="modal fade" id="modalEdit" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="button-wrapper">
+                    <label class="badge bg-label-primary me-3">
+                        <i class="bx bx-pencil"></i>
+                    </label>
+                    <span class="text-primary fw-bold">Edit Product</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12 col-lg-12">
+                    <div class="row h-100">
+                        <div class="col-md-4 col-lg-4 mb-3">
+                            <div class="ratio ratio-1x1">
+                                <img id="editImagePreview" alt="Image Product" class="img-fluid img-cover" />
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-lg-8">
+                            <form method="post" asp-action="Edit" enctype="multipart/form-data" id="editForm">
+                                <input type="hidden" asp-for="EditProductVM.Id" name="Id" id="ProductId">
+                                <input type="hidden" asp-for="EditProductVM.ImageUrl" id="ImageUrl">
+                                <input type="hidden" asp-for="EditProductVM.CreatedDate" id="CreatedDate">
+                                <input type="hidden" asp-for="EditProductVM.UpdatedDate" id="UpdatedDate">
+                                <span id="cvalProductName" class="text-danger pb-2"></span>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="EditProductVM.ProductName" id="ProductName" class="form-control" placeholder="Product Name" autocomplete="off">
+                                    <label asp-for="EditProductVM.ProductName" for="ProductName" class="text-primary">Product Name</label>
+                                </div>
+                                <span id="cvalDescription" class="text-danger pb-2"></span>
+                                <div class="form mb-3">
+                                    <label asp-for="EditProductVM.Description" for="Description" class="text-primary opacity-75">Description</label>
+                                    <textarea asp-for="EditProductVM.Description" id="Description" class="form-control" rows="3" placeholder="Description"></textarea>
+                                </div>
+                                <div class="form mb-3">
+                                    <label asp-for="EditProductVM.CategoryId" for="CategoryId" class="form-label text-primary opacity-75">Category</label>
+                                    <select asp-for="EditProductVM.CategoryId" id="CategoryId" class="form-select">
+                                        @foreach (var item in Model.Categories) {
+                                            <option value="@item.Id">@item.CategoryName</option>
+                                        }
+                                    </select>
+                                    <span class="text-danger" id="CategoryIdError"></span>
+                                </div>
+                                <span id="cvalPrice" class="text-danger pb-2"></span>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="EditProductVM.Price" id="Price" class="form-control" placeholder="Price">
+                                    <label asp-for="EditProductVM.Price" for="Price" class="text-primary">Price</label>
+                                </div>
+                                <span id="cvalStockQuantity" class="text-danger pb-2"></span>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="EditProductVM.StockQuantity" id="StockQuantity" class="form-control" placeholder="Stock Quantity">
+                                    <label asp-for="EditProductVM.StockQuantity" for="StockQuantity" class="text-primary">Stock Quantity</label>
+                                </div>
+                                <div class="form mb-3">
+                                    <label asp-for="EditProductVM.Image" for="Image" class="form-label text-primary opacity-75">Change Image (Optional)</label>
+                                    <input asp-for="EditProductVM.Image" type="file" id="Image" class="form-control" onchange="previewImage(event, 'editImagePreview')">
+                                    <span class="text-danger" id="ImageError"></span>
+                                </div>
+                                <div class="d-flex justify-content-end mt-3 gap-2">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- / MODAL EDIT -->
+
+<!-- MODAL DETAIL -->
+<div class="modal fade" id="modalDetail" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="button-wrapper">
+                    <label class="badge bg-label-primary me-3">
+                        <i class="bx bx-detail"></i>
+                    </label>
+                    <span class="text-primary fw-bold">Product Details</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <img id="DetailImageUrl" src="path_to_image" class="img-fluid rounded" alt="Product Image">
+                    </div>
+                    <div class="col-md-8 d-flex flex-column justify-content-between">
+                        <!-- Product Name and Category -->
+                        <div>
+                            <h5 class="text-dark fw-bold m-0" id="DetailProductName"></h5>
+                            <label class="badge bg-label-dark fs-6 mb-1 text-wrap mt-1" id="DetailCategoryName"></label>
+                            <p class="text-muted mb-2" id="DetailCreatedDate"></p>
+                            <p class="card-text" id="DetailDescription"></p>
+                        </div>
+                        <!-- StockQuantity and Price (always at the bottom) -->
+                        <div class="d-flex flex-column flex-md-row justify-content-between mt-3 align-items-start">
+                            <label class="badge bg-label-primary fs-6 d-flex align-items-center gap-1">
+                                <i class="bx bx-box"></i> <span id="DetailStockQuantity"></span>
+                            </label>
+                            <label class="badge bg-label-success text-dark fs-6 d-flex align-items-center gap-1 mt-2 mt-md-0">
+                                <i class='bx bx-money'></i> <span id="DetailPrice"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- / MODAL DETAIL -->
+
+@section Scripts {
+    <script>
+        function previewImage(event, imageFieldId) {
+            var reader = new FileReader();
+            var imageField = document.getElementById(imageFieldId);
+
+            reader.onload = function () {
+                if (reader.readyState == 2) {
+                    imageField.src = reader.result;
+                    imageField.style.display = "block";
+                }
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function deleteProduct(productId, imageUrl) {
+            const url = '/Product/DeleteProductAjax';
+            const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to delete this product?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+                customClass: {
+                    popup: 'custom-swal-popup'
+                }
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            body: JSON.stringify({ id: productId, imageUrl: imageUrl })
+                        });
+
+                        const resultData = await response.json();
+
+                        if (resultData.success) {
+                            await Swal.fire({
+                                title: "Deleted!",
+                                text: "The product has been deleted.",
+                                icon: "success",
+                                customClass: {
+                                    popup: 'custom-swal-popup'
+                                }
+                            });
+                            location.reload();
+                        } else {
+                            await Swal.fire({
+                                title: "Error!",
+                                text: resultData.message || "Failed to delete the product.",
+                                icon: "error",
+                                customClass: {
+                                    popup: 'custom-swal-popup'
+                                }
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error deleting product:', error);
+                        await Swal.fire({
+                            title: "Error!",
+                            text: "Failed to delete the product.",
+                            icon: "error",
+                            customClass: {
+                                popup: 'custom-swal-popup'
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var modalEdit = document.getElementById('modalEdit');
+            var modalDetail = document.getElementById('modalDetail');
+
+            modalEdit.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // btn trigger
+                var productId = button.getAttribute('data-id'); // get id
+
+                event.preventDefault();
+
+                // req ajax
+                fetch('/Product/GetProduct/' + productId)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('ProductId').value = data.id;
+                    document.getElementById('ProductName').value = data.productName;
+                    document.getElementById('Description').value = data.description;
+                    document.getElementById('Price').value = data.price;
+                    document.getElementById('StockQuantity').value = data.stockQuantity;
+                    document.getElementById('CategoryId').value = data.categoryId;
+                    document.getElementById('CreatedDate').value = data.createdDate;
+                    document.getElementById('UpdatedDate').value = data.updatedDate;
+                    if (data.imageUrl) {
+                        document.getElementById('ImageUrl').value = data.imageUrl;
+                        document.getElementById('editImagePreview').value = data.imageUrl;
+                        var imgElement = modalEdit.querySelector('img');
+                        imgElement.src = data.imageUrl;
+                    }
+
+                    var bootstrapModal = new bootstrap.Modal(modalEdit);
+                    bootstrapModal.show();
+                })
+                .catch(error => {
+                    console.error('Error fetching product data:', error);
+                    Swal.fire({
+                        title: "Oops...",
+                        text: 'Failed to retrieve product data. Please try again!',
+                        icon: "error",
+                        customClass: {
+                            popup: 'custom-swal-popup'
+                        }
+                    });
+                    event.preventDefault();
+                });
+            });
+
+            modalDetail.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // btn trigger
+                var productId = button.getAttribute('data-id'); // get id
+
+                event.preventDefault();
+
+                fetch('/Product/GetProduct/' + productId)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    var formatter = new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                    });
+                    var formattedPrice = formatter.format(data.price).replace(/\s+/g, '');
+
+                    var date = new Date(data.createdDate);
+                    var dateFormatter = new Intl.DateTimeFormat('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true
+                    });
+
+                    document.querySelector('#modalDetail #DetailProductName').textContent = data.productName;
+                    document.querySelector('#modalDetail #DetailCategoryName').textContent = data.categoryName;
+                    document.querySelector('#modalDetail #DetailCreatedDate').textContent = dateFormatter.format(date);
+                    document.querySelector('#modalDetail #DetailDescription').textContent = data.description;
+                    document.querySelector('#modalDetail #DetailStockQuantity').textContent = data.stockQuantity;
+                    document.querySelector('#modalDetail #DetailPrice').textContent = formattedPrice;
+                    document.querySelector('#modalDetail img').src = data.imageUrl;
+
+                    var bootstrapModal = new bootstrap.Modal(modalDetail);
+                    bootstrapModal.show();
+                })
+                .catch(error => {
+                    console.error('Error fetching product data:', error);
+                    Swal.fire({
+                        title: "Oops...",
+                        text: 'Failed to retrieve product data. Please try again!',
+                        icon: "error",
+                        customClass: {
+                            popup: 'custom-swal-popup'
+                        }
+                    });
+                    event.preventDefault();
+                });
+            });
+        });
+
+        document.getElementById('modalCreate').addEventListener('hidden.bs.modal', function () {
+            var form = document.querySelector('#modalCreate form');
+            form.reset();
+            var imagePreview = document.getElementById('imagePreview');
+            if (imagePreview) {
+                imagePreview.src = '/assets/img/elements/imgpreview.png';
+            }
+
+            var validationMessages = [
+                'valProductName',
+                'valDescription',
+                'valCategoryId',
+                'valPrice',
+                'valStockQuantity',
+                'valImageUrl'
+            ];
+
+            validationMessages.forEach(function (messageId) {
+                var messageElement = document.getElementById(messageId);
+                if (messageElement) {
+                    messageElement.textContent = '';
+                }
+            });
+        });
+
+        document.getElementById('modalEdit').addEventListener('hidden.bs.modal', function () {
+            var form = document.querySelector('#modalEdit form');
+            form.reset();
+
+            var validationMessages = [
+                'cvalProductName',
+                'cvalDescription',
+                'cvalPrice',
+                'cvalStockQuantity',
+            ];
+
+            validationMessages.forEach(function (messageId) {
+                var messageElement = document.getElementById(messageId);
+                if (messageElement) {
+                    messageElement.textContent = '';
+                }
+            });
+        });
+
+        document.getElementById('createForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var isValid = true;
+
+            var formFields = [
+                { id: 'cProductName', errorId: 'valProductName', message: 'Product name is required', maxLength: 255 },
+                { id: 'cDescription', errorId: 'valDescription', message: 'Description is required' },
+                { id: 'cCategoryId', errorId: 'valCategoryId', message: 'Category is required' },
+                { id: 'cPrice', errorId: 'valPrice', message: 'Price is required', isNumeric: true, min: 0, maxLength: 9 },
+                { id: 'cStockQuantity', errorId: 'valStockQuantity', message: 'Stock quantity is required', isNumeric: true, min: 0, maxLength: 9 },
+                { id: 'cImageUrl', errorId: 'valImageUrl', message: 'Image is required' }
+            ];
+
+            formFields.forEach(function (field) {
+                var inputElement = document.getElementById(field.id);
+                var inputValue = inputElement.value.trim();
+                var errorElement = document.getElementById(field.errorId);
+
+                errorElement.textContent = '';
+
+                if (inputValue === '') {
+                    errorElement.textContent = field.message;
+                    isValid = false;
+                } else {
+                    if (field.maxLength && inputValue.length > field.maxLength) {
+                        errorElement.textContent = `${field.message} (maximum ${field.maxLength} characters)`;
+                        isValid = false;
+                    }
+                    if (field.isNumeric) {
+                        var numberValue = parseFloat(inputValue);
+                        if (isNaN(numberValue) || numberValue < field.min) {
+                            errorElement.textContent = field.message + ' (must be a non-negative number)';
+                            isValid = false;
+                        } else if (inputValue.length > field.maxLength) {
+                            errorElement.textContent = field.message + ` (maximum ${field.maxLength} characters)`;
+                            isValid = false;
+                        }
+                    }
+                }
+            });
+
+            if (isValid) {
+                this.submit();
+            }
+        });
+
+        document.getElementById('editForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var isValid = true;
+
+            var formFields = [
+                { id: 'ProductName', errorId: 'cvalProductName', message: 'Product name is required', maxLength: 255 },
+                { id: 'Description', errorId: 'cvalDescription', message: 'Description is required' },
+                { id: 'Price', errorId: 'cvalPrice', message: 'Price is required', isNumeric: true, min: 0, maxLength: 9 },
+                { id: 'StockQuantity', errorId: 'cvalStockQuantity', message: 'Stock quantity is required', isNumeric: true, min: 0, maxLength: 9 },
+            ];
+
+            formFields.forEach(function (field) {
+                var inputElement = document.getElementById(field.id);
+                var inputValue = inputElement.value.trim();
+                var errorElement = document.getElementById(field.errorId);
+
+                errorElement.textContent = '';
+
+                if (inputValue === '') {
+                    errorElement.textContent = field.message;
+                    isValid = false;
+                } else {
+                    if (field.maxLength && inputValue.length > field.maxLength) {
+                        errorElement.textContent = `${field.message} (maximum ${field.maxLength} characters)`;
+                        isValid = false;
+                    }
+                    if (field.isNumeric) {
+                        var numberValue = parseFloat(inputValue);
+                        if (isNaN(numberValue) || numberValue < field.min) {
+                            errorElement.textContent = field.message + ' (must be a non-negative number)';
+                            isValid = false;
+                        } else if (inputValue.length > field.maxLength) {
+                            errorElement.textContent = field.message + ` (maximum ${field.maxLength} characters)`;
+                            isValid = false;
+                        }
+                    }
+                }
+            });
+
+            if (isValid) {
+                this.submit();
+            }
+        });
+
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                Swal.fire({
+                    title: "Success!",
+                    text: successMessage,
+                    icon: "success",
+                    customClass: {
+                        popup: 'custom-swal-popup'
+                    }
+                });
+            }
+
+            if (errorMessage) {
+                Swal.fire({
+                    title: "Error!",
+                    text: errorMessage,
+                    icon: "error",
+                    customClass: {
+                        popup: 'custom-swal-popup'
+                    }
+                });
+            }
+        });
+
+        document.getElementById('cPrice').addEventListener('keydown', function (event) {
+            if (event.key === 'e' || event.key === 'E' || event.key === '+' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+
+        document.getElementById('Price').addEventListener('keydown', function (event) {
+            if (event.key === 'e' || event.key === 'E' || event.key === '+' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+
+        document.getElementById('cStockQuantity').addEventListener('keydown', function (event) {
+            if (event.key === 'e' || event.key === 'E' || event.key === '+' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+
+        document.getElementById('StockQuantity').addEventListener('keydown', function (event) {
+            if (event.key === 'e' || event.key === 'E' || event.key === '+' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+    </script>
+}

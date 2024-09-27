@@ -1,0 +1,408 @@
+﻿@using EcoMart.ViewModels
+@model CategoryViewModel
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<!-- Navbar -->
+<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+     id="layout-navbar">
+    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
+        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
+            <i class="bx bx-menu bx-md"></i>
+        </a>
+    </div>
+    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+        <!-- Search -->
+        <div class="navbar-nav align-items-center">
+            <form asp-action="Index">
+                <div class="nav-item d-flex align-items-center">
+                    <i class="bx bx-search bx-md"></i>
+                    <input asp-for="Term" type="text" name="term" class="form-control border-0 shadow-none ps-1 ps-sm-2" placeholder="Search..." autocomplete="off" />
+                </div>
+            </form>
+        </div>
+        <!-- /Search -->
+        <ul class="navbar-nav flex-row align-items-center ms-auto">
+            <!-- User -->
+            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar avatar-online">
+                                        <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">@ViewBag.UserName</h6>
+                                    <small class="text-muted">@ViewBag.Role</small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider my-1"></div>
+                    </li>
+                    <li>
+                        <span class="dropdown-item m-0 p-0">
+                            <form asp-area="" asp-controller="Account" asp-action="Logout">
+                                <button class="w-100 text-start" style="border: none; background: none; color: inherit; height: 38px;"><i class="bx bx-power-off bx-md me-3 ms-3"></i> Logout</button>
+                            </form>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <!--/ User -->
+        </ul>
+    </div>
+</nav>
+<!--/ Navbar -->
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="card mb-6">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-6 pb-4 justify-content-between mb-3">
+                            <div class="button-wrapper">
+                                <label class="badge bg-label-primary me-3 mb-4" style="cursor: default">
+                                    <i class="bx bx-category"></i>
+                                </label>
+                                <span class="text-primary fw-bold">Categories</span>
+                            </div>
+                            <div class="button-wrapper">
+                                <button type="button" class="btn btn-sm btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#modalCreate" tabindex="0">
+                                    <span class="d-none d-sm-block"><i class="bx bx-upload"></i>&nbsp;&nbsp;Add</span>
+                                    <i class="bx bx-upload d-block d-sm-none"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4 g-3">
+                            <div class="table-responsive text-nowrap">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">No</th>
+                                            <th>Category Name</th>
+                                            <th class="text-center">Product in Category</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (TempData["NoData"] != null) {
+                                            <tr>
+                                                <td colspan="4" class="text-center">@TempData["NoData"]</td>
+                                            </tr>
+                                        }
+                                        @{
+                                            int rowIndex = (Model.CurrentPage - 1) * Model.PageSize;
+                                        }
+                                        @foreach (var item in Model.Categories) {
+                                            rowIndex++;
+                                            <tr>
+                                                <td class="text-center">@rowIndex</td>
+                                                <td>@item.CategoryName</td>
+                                                <td class="text-center">@item.ProductCount</td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEdit" data-id="@item.Id"><i class='bx bx-pencil'></i></button>&nbsp;
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteCategory(@item.Id)"><i class='bx bx-trash'></i></button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            @if (Model.TotalPages > 1) {
+                                <div class="d-flex justify-content-end mt-6">
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination">
+                                            @if (Model.CurrentPage > 1) {
+                                                <li class="page-item prev">
+                                                    <a class="page-link" href="/Category/Index?term=@Model.Term&currentPage=@(Model.CurrentPage-1)">
+                                                        <i class="tf-icon bx bx-chevron-left bx-sm"></i>
+                                                    </a>
+                                                </li>
+                                            }
+                                            @for (int i = 1; i <= Model.TotalPages; i++) {
+                                                @if (i == Model.CurrentPage) {
+                                                    <li class="page-item active">
+                                                        <a class="page-link" href="/Category/Index?term=@Model.Term&currentPage=@i">@i</a>
+                                                    </li>
+                                                } else {
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="/Category/Index?term=@Model.Term&currentPage=@i">@i</a>
+                                                    </li>
+                                                }
+                                            }
+                                            @if (Model.CurrentPage < Model.TotalPages) {
+                                                <li class="page-item next">
+                                                    <a class="page-link" href="/Category/Index?term=@Model.Term&currentPage=@(Model.CurrentPage+1)">
+                                                        <i class="tf-icon bx bx-chevron-right bx-sm"></i>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </nav>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- / Content -->
+    <div class="content-backdrop fade"></div>
+</div>
+<!-- Content wrapper -->
+
+<!-- MODAL ADD -->
+<div class="modal fade" id="modalCreate" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="button-wrapper">
+                    <label class="badge bg-label-primary me-3">
+                        <i class="bx bx-upload"></i>
+                    </label>
+                    <span class="text-primary fw-bold">Add Category</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Create" id="createForm">
+                    <span id="validationCategoryName" class="text-danger pb-2"></span>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CreateCategoryVM.CategoryName" class="form-control" id="createCategoryName" placeholder="Category Name" autocomplete="off" spellcheck="false">
+                        <label for="createCategoryName" class="text-primary">Category Name</label>
+                    </div>
+                    <div class="d-flex justify-content-end mt-6 gap-2">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- / MODAL ADD -->
+
+<!-- MODAL EDIT -->
+<div class="modal fade" id="modalEdit" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="button-wrapper">
+                    <label class="badge bg-label-primary me-3">
+                        <i class="bx bx-pencil"></i>
+                    </label>
+                    <span class="text-primary fw-bold">Edit Category</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Edit" id="editForm">
+                    <input type="hidden" asp-for="EditCategoryVM.Id" name="id" id="CategoryId">
+                    <input type="hidden" asp-for="EditCategoryVM.CreatedDate" id="CreatedDate">
+                    <input type="hidden" asp-for="EditCategoryVM.UpdatedDate" id="UpdatedDate">
+                    <span id="valEditCategoryName" class="text-danger pb-2"></span>
+                    <div class="form-floating mb-3">
+                        <input asp-for="EditCategoryVM.CategoryName" id="CategoryName" class="form-control" placeholder="Category Name" autocomplete="off" spellcheck="false">
+                        <label asp-for="EditCategoryVM.CategoryName" for="CategoryName" class="text-primary">Category Name</label>
+                    </div>
+                    <div class="d-flex justify-content-end mt-6 gap-2">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- / MODAL EDIT -->
+
+@section Scripts {
+    <script>
+        function deleteCategory(categoryId) {
+            Swal.fire({
+                title: "Are you sure?",
+                html: "You want to delete this category?<br><br>(All products in the category will be deleted)",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+                customClass: {
+                    popup: 'custom-swal-popup'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/Category/DeleteCategoryAjax', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: JSON.stringify({ id: categoryId })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "The category has been deleted.",
+                                icon: "success",
+                                customClass: {
+                                    popup: 'custom-swal-popup'
+                                }
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Failed to delete the category.",
+                                icon: "error",
+                                customClass: {
+                                    popup: 'custom-swal-popup'
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting category:', error);
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Failed to delete the category.",
+                            icon: "error",
+                            customClass: {
+                                popup: 'custom-swal-popup'
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var modalEdit = document.getElementById('modalEdit');
+
+            modalEdit.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget; // btn trigger
+                var categoryId = button.getAttribute('data-id'); // get id
+
+                event.preventDefault();
+
+                // req ajax
+                fetch('/Category/GetCategory/' + categoryId)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    var validationCategoryName = document.getElementById('valEditCategoryName');
+                    validationCategoryName.textContent = '';
+
+                    document.getElementById('CategoryId').value = data.id;
+                    document.getElementById('CategoryName').value = data.categoryName;
+                    document.getElementById('CreatedDate').value = data.createdDate;
+                    document.getElementById('UpdatedDate').value = data.updatedDate;
+
+                    var bootstrapModal = new bootstrap.Modal(modalEdit);
+                    bootstrapModal.show();
+                })
+                .catch(error => {
+                    console.error('Error fetching category data:', error);
+                    Swal.fire({
+                        title: "Oops...",
+                            text: 'Failed to retrieve category data. Please try again!',
+                        icon: "error",
+                        customClass: {
+                            popup: 'custom-swal-popup'
+                        }
+                    });
+                    event.preventDefault();
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                Swal.fire({
+                    title: "Success!",
+                    text: successMessage,
+                    icon: "success",
+                    customClass: {
+                        popup: 'custom-swal-popup'
+                    }
+                });
+            }
+
+            if (errorMessage) {
+                Swal.fire({
+                    title: "Error!",
+                    text: errorMessage,
+                    icon: "error",
+                    customClass: {
+                        popup: 'custom-swal-popup'
+                    }
+                });
+            }
+        });
+
+        document.getElementById('modalCreate').addEventListener('hidden.bs.modal', function () {
+            var form = document.querySelector('#modalCreate form');
+            form.reset();
+            var validationCategoryName = document.getElementById('validationCategoryName');
+            validationCategoryName.textContent = '';
+        });
+
+        document.getElementById('createForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var categoryName = document.getElementById('createCategoryName').value.trim();
+            var validationCategoryName = document.getElementById('validationCategoryName');
+            validationCategoryName.textContent = '';
+
+            if (categoryName === '') {
+                validationCategoryName.textContent = 'Category name is required';
+            } else {
+                this.submit();
+            }
+        });
+
+        document.getElementById('editForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var categoryName = document.getElementById('CategoryName').value.trim();
+            var validationCategoryName = document.getElementById('valEditCategoryName');
+            validationCategoryName.textContent = '';
+
+            if (categoryName === '') {
+                validationCategoryName.textContent = 'Category name is required';
+            } else {
+                this.submit();
+            }
+        });
+    </script>
+}

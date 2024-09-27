@@ -1,0 +1,150 @@
+﻿@using EcoMart.ViewModels
+@model IncomeViewModel
+
+@{
+    ViewData["Title"] = "Income Statements";
+}
+
+<!-- Navbar -->
+<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+     id="layout-navbar">
+    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
+        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
+            <i class="bx bx-menu bx-md"></i>
+        </a>
+    </div>
+    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+        <ul class="navbar-nav flex-row align-items-center ms-auto">
+            <!-- User -->
+            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar avatar-online">
+                                        <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">@ViewBag.UserName</h6>
+                                    <small class="text-muted">@ViewBag.Role</small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider my-1"></div>
+                    </li>
+                    <li>
+                        <span class="dropdown-item m-0 p-0">
+                            <form asp-area="" asp-controller="Account" asp-action="Logout">
+                                <button class="w-100 text-start" style="border: none; background: none; color: inherit; height: 38px;"><i class="bx bx-power-off bx-md me-3 ms-3"></i> Logout</button>
+                            </form>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <!--/ User -->
+        </ul>
+    </div>
+</nav>
+<!--/ Navbar -->
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="card mb-6">
+                    <div class="card-body">
+                        <div class="row pb-4">
+                            <div class="col-12 col-sm-6 d-flex justify-content-between">
+                                <div class="button-wrapper">
+                                    <label class="badge bg-label-primary me-3 mb-4">
+                                        <i class='bx bx-bar-chart-square'></i>
+                                    </label>
+                                    <span class="text-primary fw-bold">Income Statements</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 d-flex justify-content-sm-end">
+                                <div class="button-wrapper">
+                                    <form asp-action="Index" asp-controller="Income" method="get">
+                                        <select class="form-select form-select-sm" id="yearDropdown" name="filterBy" onchange="this.form.submit()">
+                                            @foreach (var year in ViewBag.Years) {
+                                                @if (Model.FilterBy == year.ToString()) {
+                                                    <option value="@year" selected>@year</option>
+                                                } else {
+                                                    <option value="@year">@year</option>
+                                                }
+                                            }
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4 g-3">
+                            <h6>Total Income in @Model.FilterBy : @Model.TotalIncome.ToString("C0", new System.Globalization.CultureInfo("id-ID"))</h6>
+                            <div class="inc-cont-income">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- / Content -->
+    <div class="content-backdrop fade"></div>
+</div>
+<!-- Content wrapper -->
+
+@section Scripts {
+    <script>
+        const monthlyPayments = @Html.Raw(Json.Serialize(ViewBag.MonthlyPayments));
+        const ctx = document.getElementById('myChart');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Des'],
+                datasets: [{
+                    label: 'Income',
+                    data: monthlyPayments,
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgb(75, 192, 192)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: {
+                            autoSkip: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}

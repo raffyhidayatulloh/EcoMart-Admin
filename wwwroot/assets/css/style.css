@@ -1,0 +1,191 @@
+/* -- SWEET ALERT Z INDEX -- */
+.custom-swal-popup {
+    z-index: 9999 !important;
+}
+.swal2-container {
+    z-index: 9999 !important;
+}
+/* -- / SWEET ALERT Z INDEX -- */
+
+/*-- DASHBOARD (INCOME STATEMENTS) --*/
+.dash-cont-income {
+    height: 300px;
+}
+.inc-cont-income {
+    height: 400px;
+}
+@media (max-width: 500px) {
+    .dash-cont-income {
+        height: 200px;
+    }
+}
+@media (max-width: 426px) {
+    .inc-cont-income {
+        height: 200px;
+    }
+}
+@media (max-width: 576px) {
+    .d-flex.gap-6 {
+        gap: 0 !important;
+    }
+}
+
+/* -- PRODUCT - PREVIEW IMAGE -- */
+.img-cover {
+    object-fit: cover;
+    object-position: top center;
+    width: 100%;
+    height: 100%;
+}
+@media (max-width: 327px) {
+    .product-i-d-none {
+        display: none !important;
+    }
+}
+/* -- / PRODUCT - PREVIEW IMAGE -- */
+
+/* -- LOGIN PAGE -- */
+.login-bg-image img {
+    max-width: 75%;
+    min-width: 5%;
+    height: auto;
+}
+
+.login-bg-image {
+    background-size: cover;
+    background-position: right center;
+    background-repeat: no-repeat;
+    justify-content: center;
+    align-items: center;
+    padding-top: 40px;
+}
+
+.login-form {
+    justify-content: center;
+    align-items: center;
+}
+
+.login-btn {
+    background-color: #FCD309;
+    border-radius: 24px;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.login-input {
+    border: none;
+    border-bottom: 2px solid #D1D1D4;
+    background: none;
+    padding-left: 40px;
+}
+
+.login-input:active, .login-input:focus, .login-input:hover {
+    outline: none;
+    border-bottom-color: #FCD309;
+}
+
+.login-icon-container {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    color: #52B503;
+}
+
+.login-flex-direction {
+    flex-direction: row;
+}
+
+.login-w-50 {
+    width: 50%;
+}
+
+@media (max-width: 490px) {
+    .login-flex-direction {
+        flex-direction: column-reverse;
+    }
+
+    .login-w-50 {
+        width: 100%;
+        height: 50vh;
+    }
+
+    .login-form {
+        justify-content: end;
+    }
+
+    .login-bg-image {
+        background-size: contain;
+        background-position: left bottom;
+        padding-top: 0px;
+    }
+}
+
+@media (max-width: 450px) {
+    .login-flex-direction {
+        flex-direction: column-reverse;
+    }
+
+    .login-w-50 {
+        width: 100%;
+        height: 50vh;
+    }
+
+    .login-bg-image img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        max-height: 100%;
+        object-position: left;
+    }
+
+    .login-bg-image {
+        background-size: contain;
+        background-position: left top;
+        align-items: end;
+        justify-content: left;
+    }
+}
+/* -- / LOGIN PAGE -- */
+
+/* -- REVIEW PAGE -- */
+.review-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.border-line {
+    border-right: 2px solid #dee2e6;
+    position: relative;
+}
+
+@media (max-width: 767px) {
+    .review-info {
+        align-items: start;
+        margin-bottom: 24px;
+    }
+
+    .review-pb {
+        padding-bottom: 24px;
+    }
+
+    .border-line {
+        border-right: none;
+        border-bottom: none;
+    }
+
+    .border-line::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        width: 25%;
+        border-bottom: 2px solid #dee2e6;
+    }
+}
+/* -- / REVIEW PAGE -- */

@@ -1,0 +1,40 @@
+﻿@using EcoMart.ViewModels
+@model LoginViewModel
+
+@{
+    Layout = "_LoginLayout";
+    ViewData["Title"] = "Login";
+}
+
+<div class="d-flex min-vh-100 login-flex-direction">
+    <div class="d-flex login-w-50 login-bg-image" style="background-image: url('@Url.Content("~/assets/img/login/splash.png")');">
+        <img src="~/assets/img/login/logoLogin.png" />
+    </div>
+    <div class="d-flex flex-column login-form login-w-50">
+        <form asp-action="Login" class="w-75">
+            <h1 class="text-white fw-bold mb-4 text-center">LOGIN TO SYSTEM</h1>
+            @if (TempData["Error"] != null) {
+                <div class="cold-md-12 alert alert-danger alert-dismissible" role="alert">
+                    Sorry! - @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <span asp-validation-for="UserName" class="text-danger"></span>
+            <div class="mb-4 input-wrapper">
+                <label for="username" class="login-icon-container">
+                    <i class='bx bxs-user'></i>
+                </label>
+                <input asp-for="UserName" class="login-input text-white w-100" id="username" placeholder="Username" autocomplete="off">
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+            <div class="mb-4 input-wrapper">
+                <label for="password" class="login-icon-container">
+                    <i class='bx bxs-lock-alt'></i>
+                </label>
+                <input asp-for="Password" class="login-input text-white w-100" id="password" placeholder="Password">
+            </div>
+            <input type="submit" class="btn btn-warning w-100 fw-bold login-btn" value="LOGIN" />
+        </form>
+    </div>
+</div>

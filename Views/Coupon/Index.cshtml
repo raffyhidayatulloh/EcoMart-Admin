@@ -1,0 +1,439 @@
+﻿@using EcoMart.ViewModels
+@model CouponViewModel
+
+@{
+    ViewData["Title"] = "Coupons";
+}
+
+<!-- Navbar -->
+<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+     id="layout-navbar">
+    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
+        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
+            <i class="bx bx-menu bx-md"></i>
+        </a>
+    </div>
+    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+        <ul class="navbar-nav flex-row align-items-center ms-auto">
+            <!-- User -->
+            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar avatar-online">
+                                        <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">@ViewBag.UserName</h6>
+                                    <small class="text-muted">@ViewBag.Role</small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider my-1"></div>
+                    </li>
+                    <li>
+                        <span class="dropdown-item m-0 p-0">
+                            <form asp-area="" asp-controller="Account" asp-action="Logout">
+                                <button class="w-100 text-start" style="border: none; background: none; color: inherit; height: 38px;">
+                                    <i class="bx bx-power-off bx-md me-3 ms-3"></i> Logout
+                                </button>
+                            </form>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <!--/ User -->
+        </ul>
+    </div>
+</nav>
+<!--/ Navbar -->
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="card mb-6">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-6 pb-4 justify-content-between">
+                            <div class="button-wrapper">
+                                <label class="badge bg-label-primary me-3 mb-4">
+                                    <i class="bx bxs-coupon"></i>
+                                </label>
+                                <span class="text-primary fw-bold">Coupons</span>
+                            </div>
+                            <div class="button-wrapper d-flex gap-3">
+                                <a class="btn btn-primary btn-icon dropdown-toggle hide-arrow text-white mb-4" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class='bx bx-filter'></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="/Coupon/Index">None</a></li>
+                                    <li><a class="dropdown-item" href="/Coupon/Index?filterBy=0">Inactive</a></li>
+                                    <li><a class="dropdown-item" href="/Coupon/Index?filterBy=1">Active</a></li>
+                                </ul>
+                                <button type="button" class="btn btn-sm btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#modalCreate" tabindex="0">
+                                    <span class="d-none d-sm-block"><i class="bx bx-upload"></i>&nbsp;&nbsp;Add</span>
+                                    <i class="bx bx-upload d-block d-sm-none"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4 g-4">
+                            @if (TempData["NoData"] != null) {
+                                <h6 class="text-center">@TempData["NoData"]</h6>
+                            }
+                            @foreach (var coupon in Model.Coupons) {
+                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                    <div class="card" style="background-color: @(coupon.IsActive == false || coupon.ExpiryDate < DateTime.Now ? "#808080" : "#1F7C09"); padding: 10px; position: relative; margin-bottom: 20px;">
+                                        @if (coupon.IsActive == false || coupon.ExpiryDate < DateTime.Now) {
+                                            <button type="button" class="btn btn-danger btn-sm" style="position: absolute; top: 10px; right: 10px; width:32px; height:32px;" onclick="deleteCoupon(@coupon.Id)">
+                                                <i class='bx bx-trash'></i>
+                                            </button>
+                                        } else {
+                                            <div class="form-check form-switch" style="position: absolute; top: 10px; right: 4px;">
+                                                <input class="form-check-input" type="checkbox" id="toggleActive_@coupon.Id" @(coupon.IsActive ? "checked" : "") data-coupon-id="@coupon.Id">
+                                            </div>
+                                        }
+                                        <div class="d-flex align-items-center" style="height: 130px;">
+                                            <div class="flex-grow-1 ms-3">
+                                                <div class="card-body p-0">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <img src="../assets/img/elements/ecomart12.png" alt="Diskon Icon" class="img-fluid" style="width: 50px; height: 50px; margin-right: 10px;">
+                                                        <h5 class="card-title mb-1 text-white"><b>DISCOUNT!</b></h5>
+                                                    </div>
+                                                    <p class="card-text mb-3" style="font-size: 15px; color: #FCD309;">
+                                                        @coupon.DiscountPersent % s.d Rp @String.Format("{0:N0}", coupon.MaxDiscount).Replace(",", ".")
+                                                    </p>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <p class="card-text mb-0 text-white" style="font-size: 12px;">
+                                                            <i class="bi bi-clock"> @coupon.ExpiryDate</i>
+                                                        </p>
+                                                        <div class="d-flex align-items-center ms-3">
+                                                            <div style="border: 1px solid #FCD309; color: #FCD309; font-size: 7px; padding: 5px 10px; text-align: center; border-radius: 4px;">RP</div>
+                                                            <p class="ms-2 mb-0 text-warning" style="font-size: 12px; margin-bottom: 0;">
+                                                                Min. Rp<span>@String.Format("{0:N0}", coupon.MinPurchase).Replace(",", ".")</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.TotalPages > 1) {
+                                <div class="d-flex justify-content-end mt-6">
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination">
+                                            @if (Model.CurrentPage > 1) {
+                                                <li class="page-item prev">
+                                                    <a class="page-link" href="/Coupon/Index?currentPage=@(Model.CurrentPage-1)&filterBy=@Model.FilterBy">
+                                                        <i class="tf-icon bx bx-chevron-left bx-sm"></i>
+                                                    </a>
+                                                </li>
+                                            }
+                                            @for (int i = 1; i <= Model.TotalPages; i++) {
+                                                @if (i == Model.CurrentPage) {
+                                                    <li class="page-item active">
+                                                        <a class="page-link" href="/Coupon/Index?currentPage=@i&filterBy=@Model.FilterBy">@i</a>
+                                                    </li>
+                                                } else {
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="/Coupon/Index?currentPage=@i&filterBy=@Model.FilterBy">@i</a>
+                                                    </li>
+                                                }
+                                            }
+                                            @if (Model.CurrentPage < Model.TotalPages) {
+                                                <li class="page-item next">
+                                                    <a class="page-link" href="/Coupon/Index?currentPage=@(Model.CurrentPage+1)&filterBy=@Model.FilterBy">
+                                                        <i class="tf-icon bx bx-chevron-right bx-sm"></i>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </nav>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- / Content -->
+    <div class="content-backdrop fade"></div>
+</div>
+<!-- Content wrapper -->
+
+<!-- MODAL ADD -->
+<div class="modal fade" id="modalCreate" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="button-wrapper">
+                    <label class="badge bg-label-primary me-3">
+                        <i class="bx bx-upload"></i>
+                    </label>
+                    <span class="text-primary fw-bold">Add Coupon</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Create" id="createForm">
+                    <span id="valDiscountPercent" class="text-danger pb-2"></span>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CreateCouponVM.DiscountPersent" class="form-control" id="DiscountPercent" placeholder="Discount Percent">
+                        <label for="DiscountPercent" class="text-primary">Discount Percent</label>
+                    </div>
+                    <span id="valMaxDiscount" class="text-danger pb-2"></span>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CreateCouponVM.MaxDiscount" class="form-control" id="MaxDiscount" placeholder="Max Discount">
+                        <label for="MaxDiscount" class="text-primary">Max Discount</label>
+                    </div>
+                    <span id="valMinPurchase" class="text-danger pb-2"></span>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CreateCouponVM.MinPurchase" class="form-control" id="MinPurchase" placeholder="Min Purchase">
+                        <label for="MinPurchase" class="text-primary">Min Purchase</label>
+                    </div>
+                    <span id="valExpiryDate" class="text-danger pb-2"></span>
+                    <div class="form-floating mb-3">
+                        <input asp-for="CreateCouponVM.ExpiryDate" class="form-control" placeholder="Expiry Date" id="ExpiryDate">
+                        <label for="ExpiryDate" class="text-primary">Expiry Date</label>
+                    </div>
+                    <div class="d-flex justify-content-end mt-3 gap-2">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- / MODAL ADD -->
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var toggles = document.querySelectorAll('.form-check-input');
+
+            toggles.forEach(function (toggle) {
+                toggle.addEventListener('change', function () {
+                    var couponId = this.getAttribute('data-coupon-id');
+                    var isActive = this.checked;
+
+                    if (!isActive) {
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "You want to set this coupon as inactive?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, deactivate it!",
+                            cancelButtonText: "Cancel"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                updateCouponStatus(couponId, isActive);
+                            } else {
+                                this.checked = true;
+                            }
+                        });
+                    } else {
+                        updateCouponStatus(couponId, isActive);
+                    }
+                });
+            });
+
+            function updateCouponStatus(couponId, isActive) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Coupon/UpdateStatus', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('RequestVerificationToken', document.querySelector('input[name="__RequestVerificationToken"]').value);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Updated!',
+                                text: 'Coupon status updated successfully',
+                                icon: 'success'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message || 'Error updating coupon status',
+                                icon: 'error'
+                            });
+                            this.checked = !isActive;
+                        }
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Error updating coupon status',
+                            icon: 'error'
+                        });
+                        this.checked = !isActive;
+                    }
+                }.bind(this);
+                xhr.send(JSON.stringify({ id: couponId, isActive: isActive }));
+            }
+        });
+
+        function deleteCoupon(Id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to delete this coupon?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteCouponAjax", "Coupon")',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        headers: {
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        data: JSON.stringify({ id: Id }),
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: "Deleted!",
+                                    text: response.message,
+                                    icon: "success"
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: response.message,
+                                    icon: "error"
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Failed to delete the coupon.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        document.getElementById('modalCreate').addEventListener('hidden.bs.modal', function () {
+            var form = document.querySelector('#modalCreate form');
+            form.reset();
+
+            var validationMessages = [
+                'valDiscountPercent',
+                'valMaxDiscount',
+                'valMinPurchase',
+                'valExpiryDate'
+            ];
+
+            validationMessages.forEach(function (messageId) {
+                var messageElement = document.getElementById(messageId);
+                if (messageElement) {
+                    messageElement.textContent = '';
+                }
+            });
+        });
+
+        document.getElementById('createForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var isValid = true;
+
+            var formFields = [
+                { id: 'MaxDiscount', errorId: 'valMaxDiscount', message: 'Max discount is required', isNumeric: true, min: 0, maxLength: 9 },
+                { id: 'DiscountPercent', errorId: 'valDiscountPercent', message: 'Discount percent is required', isNumeric: true, min: 0, maxLength: 3 },
+                { id: 'MinPurchase', errorId: 'valMinPurchase', message: 'Min Purchase is required', isNumeric: true, min: 0, maxLength: 9 },
+                { id: 'ExpiryDate', errorId: 'valExpiryDate', message: 'Expiry date is required' }
+            ];
+
+            formFields.forEach(function (field) {
+                var inputElement = document.getElementById(field.id);
+                var inputValue = inputElement.value.trim();
+                var errorElement = document.getElementById(field.errorId);
+
+                errorElement.textContent = '';
+
+                if (inputValue === '') {
+                    errorElement.textContent = field.message;
+                    isValid = false;
+                } else {
+                    if (field.maxLength && inputValue.length > field.maxLength) {
+                        errorElement.textContent = `${field.message} (maximum ${field.maxLength} characters)`;
+                        isValid = false;
+                    }
+                    if (field.isNumeric) {
+                        var numberValue = parseFloat(inputValue);
+                        if (isNaN(numberValue) || numberValue < field.min) {
+                            errorElement.textContent = field.message + ' (must be a non-negative number)';
+                            isValid = false;
+                        } else if (inputValue.length > field.maxLength) {
+                            errorElement.textContent = field.message + ` (maximum ${field.maxLength} characters)`;
+                            isValid = false;
+                        }
+                    }
+                }
+            });
+
+            if (isValid) {
+                this.submit();
+            }
+        });
+
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+
+            if (successMessage) {
+                Swal.fire({
+                    title: "Success!",
+                    text: successMessage,
+                    icon: "success",
+                    customClass: {
+                        popup: 'custom-swal-popup'
+                    }
+                });
+            }
+
+            if (errorMessage) {
+                Swal.fire({
+                    title: "Error!",
+                    text: errorMessage,
+                    icon: "error",
+                    customClass: {
+                        popup: 'custom-swal-popup'
+                    }
+                });
+            }
+        });
+    </script>
+}
